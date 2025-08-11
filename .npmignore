@@ -1,0 +1,25 @@
+# 开发和构建工具
+tsconfig.json
+build.js
+
+# 开发环境文件
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 测试和示例配置文件
+cursor-mcp-config.json
+
+# Git 相关
+.git/
+.gitignore
+
+# 日志和缓存
+*.log
+.cache/
+.npm/
+
+# 其他
+.DS_Store
+node_modules/ 

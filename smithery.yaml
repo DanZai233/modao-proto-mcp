@@ -1,0 +1,98 @@
+name: "modao-proto-mcp"
+description: "Modao Proto MCP - A Model Context Protocol server for prototype generation and design tools"
+keywords:
+  - mcp
+  - ai
+  - html
+  - design
+  - generation
+  - context-protocol
+repository: "https://github.com/your-username/modao-proto-mcp"
+homepage: "https://github.com/your-username/modao-proto-mcp"
+license: "MIT"
+
+# MCP服务配置
+mcp:
+  # 服务器配置
+  servers:
+    modao-proto-mcp:
+      command: "npx"
+      args:
+        - "-y"
+        - "modao-proto-mcp"
+        - "--token=${MODAO_TOKEN}"
+        - "--url=${MODAO_URL:-http://localhost:3000}"
+      env: {}
+
+  # 参数配置
+  parameters:
+    - name: "MODAO_TOKEN"
+      description: "Modao API 服务访问 token"
+      required: true
+      type: "string"
+    - name: "MODAO_URL"
+      description: "API 服务地址"
+      required: false
+      type: "string"
+      default: "http://localhost:3000"
+
+  # 工具描述
+  tools:
+    - name: "gen_html"
+      description: "根据用户输入的文本描述生成HTML代码"
+    - name: "gen_description"
+      description: "根据用户输入生成详细的设计需求描述"
+    - name: "gen_project_name"
+      description: "根据用户的设计需求生成合适的项目名称"
+    - name: "input_check"
+      description: "检查用户输入内容的安全性和合规性"
+    - name: "create_token"
+      description: "为用户创建新的API访问token"
+    - name: "list_tokens"
+      description: "列出用户的所有API访问token"
+    - name: "delete_token"
+      description: "删除指定的API访问token"
+
+# 安装说明
+installation:
+  instructions: |
+    1. 获取你的AI HTML API token
+    2. 安装此MCP服务到你的AI客户端
+    3. 配置token和API URL
+    4. 开始使用AI HTML生成功能！
+
+# 示例配置
+examples:
+  claude_desktop:
+    config: |
+      {
+        "mcpServers": {
+          "modao-proto-mcp": {
+            "command": "npx",
+            "args": [
+              "-y",
+              "modao-proto-mcp",
+              "--token=YOUR_TOKEN",
+              "--url=https://your-api-server.com"
+            ],
+            "env": {}
+          }
+        }
+      }
+  
+  cursor:
+    config: |
+      {
+        "mcpServers": {
+          "modao-proto-mcp": {
+            "command": "npx",
+            "args": [
+              "-y", 
+              "modao-proto-mcp",
+              "--token=YOUR_TOKEN",
+              "--url=https://your-api-server.com"
+            ],
+            "env": {}
+          }
+        }
+      } 
