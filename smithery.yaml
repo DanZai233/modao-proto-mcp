@@ -9,7 +9,7 @@ keywords:
   - context-protocol
 repository: "https://github.com/mb/modao-proto-mcp"
 homepage: "https://github.com/mb/modao-proto-mcp"
-license: "MIT"
+license: "ISC"
 
 # MCP服务配置
 mcp:

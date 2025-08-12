@@ -1,14 +1,11 @@
 # modao-proto-mcp
 
-modao-proto-mcp is a Model Context Protocol (MCP) server that connects AI clients with Modao prototype generation and design tools. It enables AI assistants to generate prototypes, create design descriptions, manage projects, and handle user tokens via a standardized interface.
+modao-proto-mcp is a Model Context Protocol (MCP) server that connects AI clients with Modao prototype generation and design tools. It enables AI assistants to generate prototypes, create design descriptions.
 
 ## Features
 
 - **HTML Generation**: Generate HTML code from text descriptions
 - **Design Description**: Create detailed design requirements and specifications
-- **Project Name Generation**: Generate appropriate project names based on requirements
-- **Input Validation**: Check content safety and compliance
-- **Token Management**: Create, list, and delete API access tokens
 - **MCP Standard Compliance**: Full compatibility with Model Context Protocol
 
 ## Quick Start
@@ -136,52 +133,6 @@ Generate detailed design requirements and specifications.
 E-commerce product listing page
 ```
 
-### 3. gen_project_name
-Generate appropriate project names based on requirements.
-
-**Parameters:**
-- `user_input` (required): Project description or requirements
-- `pics` (optional): Array of image URLs for reference
-
-**Example:**
-```
-Social media dashboard for content creators
-```
-
-### 4. input_check
-Check content safety and compliance.
-
-**Parameters:**
-- `user_input` (required): Content to be checked
-
-**Example:**
-```
-Check if this content is appropriate for web development
-```
-
-### 5. create_token
-Create new API access tokens.
-
-**Parameters:**
-- `name` (required): Token name or description
-- `expires_at` (optional): Expiration time in ISO 8601 format
-
-**Example:**
-```
-Create token for development environment
-```
-
-### 6. list_tokens
-List all user API access tokens.
-
-**Parameters:** None
-
-### 7. delete_token
-Delete a specific API access token.
-
-**Parameters:**
-- `token_id` (required): ID of the token to delete
-
 ## Local Development
 
 1. Clone the repository
@@ -208,10 +159,7 @@ modao-proto-mcp/
 │   ├── tools/           # MCP tools implementation
 │   │   ├── base-tool.ts
 │   │   ├── gen-html.ts
-│   │   ├── gen-description.ts
-│   │   ├── gen-project-name.ts
-│   │   ├── input-check.ts
-│   │   └── token-management.ts
+│   │   └── gen-description.ts
 │   ├── http-util.ts     # HTTP client utility
 │   ├── types.d.ts       # TypeScript type definitions
 │   └── index.ts         # Main entry point
@@ -228,11 +176,6 @@ This MCP service is designed to work with your API server. Make sure your API se
 
 - `POST /aihtml-go/mcp/gen_html`
 - `POST /aihtml-go/mcp/gen_description`
-- `POST /aihtml-go/chat/gen_proj_name`
-- `POST /aihtml-go/chat/input_check`
-- `POST /aihtml-go/token/create`
-- `GET /aihtml-go/token/list`
-- `DELETE /aihtml-go/token/delete`
 
 ## Error Handling
 
@@ -249,7 +192,7 @@ We welcome contributions! Please feel free to submit issues and pull requests.
 
 ## License
 
-MIT License
+ISC License
 
 ## Support
 
