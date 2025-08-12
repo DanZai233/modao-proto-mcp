@@ -21,7 +21,7 @@
     "context-protocol"
   ],
   "author": "mb",
-  "license": "MIT",
+  "license": "ISC",
   "repository": {
     "type": "git",
     "url": "https://github.com/mb/modao-proto-mcp.git"
