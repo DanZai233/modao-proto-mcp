@@ -1,0 +1,54 @@
+{
+  "name": "@modao-mcp/modao-proto-mcp",
+  "version": "1.0.1",
+  "description": "modao-proto-mcp - A Model Context Protocol server for Modao prototype generation and design tools",
+  "main": "bin/cli.js",
+  "bin": {
+    "modao-proto-mcp": "bin/cli.js"
+  },
+  "scripts": {
+    "build": "node build.js",
+    "dev": "tsx src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "ai",
+    "html",
+    "design",
+    "generation",
+    "context-protocol"
+  ],
+  "author": "mb",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mb/modao-proto-mcp.git"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "latest",
+    "axios": "^1.6.0",
+    "commander": "^11.0.0",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "esbuild": "^0.19.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "README.md",
+    "README.zh-CN.md",
+    "LICENSE"
+  ]
+} 
