@@ -16,7 +16,7 @@ modao-proto-mcp is a Model Context Protocol (MCP) server that connects AI client
 ### Using npx (Recommended)
 
 ```bash
-npx modao-proto-mcp --token=YOUR_TOKEN --url=https://your-api-server.com
+npx @modao-mcp/modao-proto-mcp --token=YOUR_TOKEN --url=https://your-api-server.com
 ```
 
 ### Installation via Smithery
@@ -24,13 +24,13 @@ npx modao-proto-mcp --token=YOUR_TOKEN --url=https://your-api-server.com
 To install for Claude Desktop automatically:
 
 ```bash
-npx -y @smithery/cli install modao-proto-mcp --client claude
+npx -y @smithery/cli install @modao-mcp/modao-proto-mcp --client claude
 ```
 
 ## Command Line Options
 
 ```bash
-npx modao-proto-mcp --token=YOUR_TOKEN [--url=API_URL] [--debug]
+npx @modao-mcp/modao-proto-mcp --token=YOUR_TOKEN [--url=API_URL] [--debug]
 ```
 
 ### Parameters:
@@ -42,7 +42,7 @@ npx modao-proto-mcp --token=YOUR_TOKEN [--url=API_URL] [--debug]
 You can also use space-separated format:
 
 ```bash
-npx modao-proto-mcp --token YOUR_TOKEN --url API_URL --debug
+npx @modao-mcp/modao-proto-mcp --token YOUR_TOKEN --url API_URL --debug
 ```
 
 ## Usage with Different MCP Clients
@@ -58,7 +58,7 @@ Add to your Claude Desktop configuration:
       "command": "npx",
       "args": [
         "-y",
-        "modao-proto-mcp",
+        "@modao-mcp/modao-proto-mcp",
         "--token=YOUR_TOKEN",
         "--url=https://your-api-server.com"
       ],
@@ -79,7 +79,7 @@ Add to your Cursor MCP configuration:
       "command": "npx",
       "args": [
         "-y",
-        "modao-proto-mcp",
+        "@modao-mcp/modao-proto-mcp",
         "--token=YOUR_TOKEN",
         "--url=https://your-api-server.com"
       ],
@@ -100,7 +100,7 @@ Add to your Cline MCP configuration:
       "command": "npx",
       "args": [
         "-y",
-        "modao-proto-mcp",
+        "@modao-mcp/modao-proto-mcp",
         "--token=YOUR_TOKEN",
         "--url=https://your-api-server.com"
       ],

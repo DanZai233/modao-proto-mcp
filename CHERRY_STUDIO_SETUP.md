@@ -13,7 +13,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "modao-proto-mcp",
+        "@modao-mcp/modao-proto-mcp",
         "--token=5bf19d67ea6225c98f922c168fbfba52",
         "--url=https://d2test.dev2.modao.ink"
       ],
@@ -40,7 +40,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "modao-proto-mcp",
+        "@modao-mcp/modao-proto-mcp",
         "--token=YOUR_TOKEN_HERE",
         "--url=YOUR_API_URL_HERE"
       ],
@@ -61,7 +61,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "modao-proto-mcp",
+        "@modao-mcp/modao-proto-mcp",
         "--token=YOUR_TOKEN_HERE",
         "--url=YOUR_API_URL_HERE",
         "--debug"

@@ -1,4 +1,4 @@
-name: "modao-proto-mcp"
+name: "@modao-mcp/modao-proto-mcp"
 description: "Modao Proto MCP - A Model Context Protocol server for prototype generation and design tools"
 keywords:
   - mcp
@@ -7,8 +7,8 @@ keywords:
   - design
   - generation
   - context-protocol
-repository: "https://github.com/your-username/modao-proto-mcp"
-homepage: "https://github.com/your-username/modao-proto-mcp"
+repository: "https://github.com/mb/modao-proto-mcp"
+homepage: "https://github.com/mb/modao-proto-mcp"
 license: "MIT"
 
 # MCP服务配置
@@ -19,7 +19,7 @@ mcp:
       command: "npx"
       args:
         - "-y"
-        - "modao-proto-mcp"
+        - "@modao-mcp/modao-proto-mcp"
         - "--token=${MODAO_TOKEN}"
         - "--url=${MODAO_URL:-http://localhost:3000}"
       env: {}

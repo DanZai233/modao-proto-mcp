@@ -16,7 +16,7 @@ modao-proto-mcp 是一个模型上下文协议（MCP）服务器，连接各类 
 ### 使用 npx (推荐)
 
 ```bash
-npx modao-proto-mcp --token=YOUR_TOKEN --url=https://your-api-server.com
+npx @modao-mcp/modao-proto-mcp --token=YOUR_TOKEN --url=https://your-api-server.com
 ```
 
 ### 通过 Smithery 安装
@@ -24,13 +24,13 @@ npx modao-proto-mcp --token=YOUR_TOKEN --url=https://your-api-server.com
 自动为 Claude Desktop 安装：
 
 ```bash
-npx -y @smithery/cli install modao-proto-mcp --client claude
+npx -y @smithery/cli install @modao-mcp/modao-proto-mcp --client claude
 ```
 
 ## 命令行选项
 
 ```bash
-npx modao-proto-mcp --token=YOUR_TOKEN [--url=API_URL] [--debug]
+npx @modao-mcp/modao-proto-mcp --token=YOUR_TOKEN [--url=API_URL] [--debug]
 ```
 
 ### 参数说明:
@@ -42,7 +42,7 @@ npx modao-proto-mcp --token=YOUR_TOKEN [--url=API_URL] [--debug]
 你也可以使用空格分隔的格式：
 
 ```bash
-npx modao-proto-mcp --token YOUR_TOKEN --url API_URL --debug
+npx @modao-mcp/modao-proto-mcp --token YOUR_TOKEN --url API_URL --debug
 ```
 
 ## 在不同MCP客户端中的使用
@@ -58,7 +58,7 @@ npx modao-proto-mcp --token YOUR_TOKEN --url API_URL --debug
       "command": "npx",
       "args": [
         "-y",
-        "modao-proto-mcp",
+        "@modao-mcp/modao-proto-mcp",
         "--token=YOUR_TOKEN",
         "--url=https://your-api-server.com"
       ],
@@ -79,7 +79,7 @@ npx modao-proto-mcp --token YOUR_TOKEN --url API_URL --debug
       "command": "npx",
       "args": [
         "-y",
-        "modao-proto-mcp",
+        "@modao-mcp/modao-proto-mcp",
         "--token=YOUR_TOKEN",
         "--url=https://your-api-server.com"
       ],
@@ -100,7 +100,7 @@ npx modao-proto-mcp --token YOUR_TOKEN --url API_URL --debug
       "command": "npx",
       "args": [
         "-y",
-        "modao-proto-mcp",
+        "@modao-mcp/modao-proto-mcp",
         "--token=YOUR_TOKEN",
         "--url=https://your-api-server.com"
       ],

@@ -1,5 +1,5 @@
 {
-  "name": "modao-proto-mcp",
+  "name": "@modao-mcp/modao-proto-mcp",
   "version": "1.0.1",
   "description": "modao-proto-mcp - A Model Context Protocol server for Modao prototype generation and design tools",
   "main": "bin/cli.js",
@@ -40,6 +40,9 @@
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "files": [
     "bin/",
