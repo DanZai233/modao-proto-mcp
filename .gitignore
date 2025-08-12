@@ -16,6 +16,7 @@ out/
 .env.development.local
 .env.test.local
 .env.production.local
+.npmrc
 
 # 日志文件
 logs
