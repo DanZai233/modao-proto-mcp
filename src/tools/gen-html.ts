@@ -1,6 +1,6 @@
 import { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { BaseTool } from './base-tool.js';
-import { GenHtmlRequest, GenHtmlResponse, ToolResult } from '../types.js';
+import { GenHtmlRequest, GenHtmlResponse, ToolResult, StreamToolResult } from '../types.js';
 
 export class GenHtmlTool extends BaseTool {
   getToolDefinition(): Tool {
@@ -17,6 +17,11 @@ export class GenHtmlTool extends BaseTool {
           reference: {
             type: "string",
             description: "可选的参考信息或上下文"
+          },
+          stream: {
+            type: "boolean",
+            description: "是否使用流式响应（推荐用于长内容生成）",
+            default: false
           }
         },
         required: ["user_input"]
@@ -92,5 +97,50 @@ export class GenHtmlTool extends BaseTool {
       console.error('HTML生成失败:', error);
       return this.createErrorResult(this.formatApiError(error));
     }
+  }
+
+  // 新增：流式执行方法
+  async executeStream(args: Record<string, any>, onChunk: (chunk: string) => void): Promise<StreamToolResult> {
+    try {
+      // 验证必需参数
+      const validationError = this.validateRequiredArgs(args, ['user_input']);
+      if (validationError) {
+        return this.createErrorResult(validationError);
+      }
+
+      const request: GenHtmlRequest = {
+        user_input: args.user_input,
+        reference: args.reference || ''
+      };
+
+      console.log(`正在流式生成HTML: "${request.user_input}"`);
+
+      // 使用流式HTTP请求
+      await this.httpUtil.postStreamWithFetch('/aihtml-go/mcp/gen_html', request, (chunk: string) => {
+        console.log('收到流式数据块:', chunk);
+        onChunk(chunk);
+      });
+
+      // 流式响应完成
+      return {
+        content: [
+          {
+            type: "text",
+            text: "HTML生成完成"
+          }
+        ],
+        isError: false,
+        isStreaming: false
+      };
+
+    } catch (error: any) {
+      console.error('流式HTML生成失败:', error);
+      return this.createErrorResult(this.formatApiError(error));
+    }
+  }
+
+  // 新增：检查是否支持流式响应
+  supportsStreaming(): boolean {
+    return true;
   }
 } 

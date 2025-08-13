@@ -61,6 +61,98 @@ export class HttpUtil {
     }
   }
 
+  // 新增：支持流式响应的POST请求
+  async postStream(endpoint: string, data: any, onChunk: (chunk: string) => void): Promise<void> {
+    try {
+      const response = await this.client.post(endpoint, data, {
+        responseType: 'stream',
+        headers: {
+          'Accept': 'text/event-stream',
+          'Cache-Control': 'no-cache',
+          'Connection': 'keep-alive',
+        },
+        onDownloadProgress: (progressEvent) => {
+          // 处理流式数据
+          if (progressEvent.event && progressEvent.event.target) {
+            const target = progressEvent.event.target as any;
+            if (target.responseText) {
+              const chunks = target.responseText.split('\n');
+              chunks.forEach((chunk: string) => {
+                if (chunk.trim() && !chunk.startsWith('data: [DONE]')) {
+                  if (chunk.startsWith('data: ')) {
+                    const content = chunk.substring(6);
+                    if (content.trim()) {
+                      onChunk(content);
+                    }
+                  }
+                }
+              });
+            }
+          }
+        }
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // 新增：使用fetch API处理流式响应（更可靠的方式）
+  async postStreamWithFetch(endpoint: string, data: any, onChunk: (chunk: string) => void): Promise<void> {
+    try {
+      const response = await fetch(`${this.config.baseUrl}${endpoint}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': this.config.token,
+          'Accept': 'text/event-stream',
+          'Cache-Control': 'no-cache',
+          'Connection': 'keep-alive',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const reader = response.body?.getReader();
+      if (!reader) {
+        throw new Error('无法获取响应流');
+      }
+
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          if (line.trim() && line.startsWith('data: ')) {
+            const content = line.substring(6);
+            if (content.trim() && content !== '[DONE]') {
+              try {
+                const parsed = JSON.parse(content);
+                if (parsed.choices && parsed.choices[0]?.delta?.content) {
+                  onChunk(parsed.choices[0].delta.content);
+                }
+              } catch (e) {
+                // 如果不是JSON，直接传递内容
+                onChunk(content);
+              }
+            }
+          }
+        }
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
   updateToken(token: string) {
     this.config.token = token;
     this.client.defaults.headers['Authorization'] = token;
