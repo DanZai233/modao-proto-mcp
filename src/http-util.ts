@@ -98,6 +98,11 @@ export class HttpUtil {
 
   // 新增：使用fetch API处理流式响应（更可靠的方式）
   async postStreamWithFetch(endpoint: string, data: any, onChunk: (chunk: string) => void): Promise<void> {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+      controller.abort();
+    }, 300000); // 5分钟超时
+
     try {
       const response = await fetch(`${this.config.baseUrl}${endpoint}`, {
         method: 'POST',
@@ -109,6 +114,7 @@ export class HttpUtil {
           'Connection': 'keep-alive',
         },
         body: JSON.stringify(data),
+        signal: controller.signal,
       });
 
       if (!response.ok) {
@@ -122,33 +128,60 @@ export class HttpUtil {
 
       const decoder = new TextDecoder();
       let buffer = '';
+      let lastActivity = Date.now();
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
 
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || '';
+          lastActivity = Date.now();
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
 
-        for (const line of lines) {
-          if (line.trim() && line.startsWith('data: ')) {
-            const content = line.substring(6);
-            if (content.trim() && content !== '[DONE]') {
-              try {
-                const parsed = JSON.parse(content);
-                if (parsed.choices && parsed.choices[0]?.delta?.content) {
-                  onChunk(parsed.choices[0].delta.content);
+          for (const line of lines) {
+            if (line.trim()) {
+              // 处理不同的流式数据格式
+              if (line.startsWith('data: ')) {
+                const content = line.substring(6);
+                if (content.trim() && content !== '[DONE]') {
+                  try {
+                    // 尝试解析JSON格式
+                    const parsed = JSON.parse(content);
+                    if (parsed.choices && parsed.choices[0]?.delta?.content) {
+                      onChunk(parsed.choices[0].delta.content);
+                    } else if (typeof parsed === 'string') {
+                      onChunk(parsed);
+                    } else if (parsed.content) {
+                      onChunk(parsed.content);
+                    }
+                  } catch (e) {
+                    // 如果不是JSON，直接传递内容
+                    onChunk(content);
+                  }
                 }
-              } catch (e) {
-                // 如果不是JSON，直接传递内容
-                onChunk(content);
+              } else {
+                // 直接传递非SSE格式的数据
+                onChunk(line);
               }
             }
           }
+
+          // 检查是否长时间无活动
+          if (Date.now() - lastActivity > 120000) {
+            console.warn('流式响应超过2分钟无数据，继续等待...');
+          }
         }
+      } finally {
+        reader.releaseLock();
+        clearTimeout(timeoutId);
       }
-    } catch (error) {
+    } catch (error: any) {
+      clearTimeout(timeoutId);
+      if (error.name === 'AbortError') {
+        throw new Error('流式请求超时');
+      }
       throw error;
     }
   }
