@@ -6,7 +6,7 @@ export class GenHtmlTool extends BaseTool {
   getToolDefinition(): Tool {
     return {
       name: "gen_html",
-      description: "根据用户输入的文本描述生成HTML代码，支持各种设计需求和页面布局。默认使用流式响应以提供更好的用户体验。",
+      description: "可以基于用户的设计需求，生成符合描述的html文件，如果有生成的详细设计说明，可沿用此设计说明作为输入条件；通常情况下，如用户无特殊要求，可直接使用此工具生成html，用户可能不会说html，而是可能用原型、页面、设计稿等词汇来表达生成html的需求，此种情况下也需要调用此工具。",
       inputSchema: {
         type: "object",
         properties: {

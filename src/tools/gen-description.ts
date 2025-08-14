@@ -6,7 +6,7 @@ export class GenDescriptionTool extends BaseTool {
   getToolDefinition(): Tool {
     return {
       name: "gen_description",
-      description: "根据用户输入生成详细的设计需求描述，包括页面布局、风格、功能等详细说明",
+      description: "可以基于用户的简短设计需求，包括纯文本需求、纯参考图片需求，或文本+参考图需求，生成详细的设计说明文档，仅在用户明确提出需要拓展设计需求时使用此工具。",
       inputSchema: {
         type: "object",
         properties: {
