@@ -1,12 +1,12 @@
 import { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { BaseTool } from './base-tool.js';
-import { GenHtmlRequest, GenHtmlResponse, ToolResult } from '../types.js';
+import { GenHtmlRequest, GenHtmlResponse, ToolResult, StreamToolResult } from '../types.js';
 
 export class GenHtmlTool extends BaseTool {
   getToolDefinition(): Tool {
     return {
       name: "gen_html",
-      description: "根据用户输入的文本描述生成HTML代码，支持各种设计需求和页面布局",
+      description: "根据用户输入的文本描述生成HTML代码，支持各种设计需求和页面布局。默认使用流式响应以提供更好的用户体验。",
       inputSchema: {
         type: "object",
         properties: {
@@ -17,6 +17,11 @@ export class GenHtmlTool extends BaseTool {
           reference: {
             type: "string",
             description: "可选的参考信息或上下文"
+          },
+          stream: {
+            type: "boolean",
+            description: "是否使用流式响应，默认为true。设置为false使用普通响应模式。",
+            default: true
           }
         },
         required: ["user_input"]
@@ -30,6 +35,14 @@ export class GenHtmlTool extends BaseTool {
       const validationError = this.validateRequiredArgs(args, ['user_input']);
       if (validationError) {
         return this.createErrorResult(validationError);
+      }
+
+      // 默认使用流式请求
+      const shouldStream = args.stream !== false; // 除非明确设置为false，否则都使用流式
+      
+      if (shouldStream) {
+        console.log(`正在流式生成HTML: "${args.user_input}"`);
+        return await this.executeStreamInternal(args);
       }
 
       const request: GenHtmlRequest = {
@@ -92,5 +105,107 @@ export class GenHtmlTool extends BaseTool {
       console.error('HTML生成失败:', error);
       return this.createErrorResult(this.formatApiError(error));
     }
+  }
+
+  // 内部流式执行方法
+  private async executeStreamInternal(args: Record<string, any>): Promise<ToolResult> {
+    try {
+      const request: GenHtmlRequest = {
+        user_input: args.user_input,
+        reference: args.reference || ''
+      };
+
+      let collectedContent = '';
+      let hasError = false;
+      let errorMessage = '';
+
+      // 使用改进的流式HTTP请求
+      try {
+        await this.httpUtil.postStreamWithFetch('/aihtml-go/mcp/gen_html', request, (chunk: string) => {
+          console.log('收到流式数据块长度:', chunk.length);
+          collectedContent += chunk;
+        });
+      } catch (streamError: any) {
+        console.error('流式请求失败，尝试普通请求:', streamError);
+        hasError = true;
+        errorMessage = streamError.message || '流式请求失败';
+        
+        // 流式失败时回退到普通请求
+        try {
+          const response = await this.httpUtil.post<GenHtmlResponse>('/aihtml-go/mcp/gen_html', request);
+          if (response.error) {
+            return this.createErrorResult(`API错误: ${response.message || response.error}`);
+          }
+          
+          const result = response.data || response as any;
+          let htmlContent = result.html_content || result.html || result.content || result.data || result.code || result.result;
+          
+          if (htmlContent) {
+            collectedContent = htmlContent;
+            hasError = false;
+          }
+        } catch (fallbackError: any) {
+          return this.createErrorResult(`流式和普通请求都失败: ${fallbackError.message}`);
+        }
+      }
+
+      if (hasError && !collectedContent) {
+        return this.createErrorResult(`流式生成失败: ${errorMessage}`);
+      }
+
+      if (!collectedContent) {
+        return this.createErrorResult('API响应中缺少HTML内容');
+      }
+
+      let resultText = `已成功生成HTML代码:\n\n\`\`\`html\n${collectedContent}\n\`\`\``;
+      
+      return this.createSuccessResult(resultText);
+
+    } catch (error: any) {
+      console.error('HTML生成失败:', error);
+      return this.createErrorResult(this.formatApiError(error));
+    }
+  }
+
+  // 新增：流式执行方法（保持兼容性）
+  async executeStream(args: Record<string, any>, onChunk: (chunk: string) => void): Promise<StreamToolResult> {
+    try {
+      let collectedContent = '';
+      
+      const request: GenHtmlRequest = {
+        user_input: args.user_input,
+        reference: args.reference || ''
+      };
+
+      console.log(`正在流式生成HTML: "${request.user_input}"`);
+
+      // 使用流式HTTP请求
+      await this.httpUtil.postStreamWithFetch('/aihtml-go/mcp/gen_html', request, (chunk: string) => {
+        console.log('收到流式数据块:', chunk);
+        collectedContent += chunk;
+        onChunk(chunk);
+      });
+
+      // 流式响应完成
+      return {
+        content: [
+          {
+            type: "text",
+            text: `流式生成完成:\n\n\`\`\`html\n${collectedContent}\n\`\`\``
+          }
+        ],
+        isError: false,
+        isStreaming: false
+      };
+
+    } catch (error: any) {
+      console.error('流式HTML生成失败:', error);
+      return this.createErrorResult(this.formatApiError(error));
+    }
+  }
+
+  // 新增：检查是否支持流式响应
+  supportsStreaming(): boolean {
+    return true;
   }
 } 

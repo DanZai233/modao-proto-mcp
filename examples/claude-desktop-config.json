@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "modao-proto-mcp": {
+      "command": "node",
+      "args": [
+        "/path/to/your/modao-proto-mcp/dist/index.js",
+        "--token=YOUR_API_TOKEN",
+        "--url=https://your-api-server.com",
+        "--debug"
+      ],
+      "env": {}
+    }
+  }
+}
