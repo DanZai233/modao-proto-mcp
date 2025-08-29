@@ -4,7 +4,6 @@ import { ToolResult } from '../types.js';
 
 export interface ImportHtmlRequest {
   htmlString: string;
-  uId: number;
   teamCid: string;
 }
 
@@ -26,16 +25,12 @@ export class ImportHtmlTool extends BaseTool {
             type: "string",
             description: "要导入的HTML字符串内容"
           },
-          uId: {
-            type: "number",
-            description: "用户ID"
-          },
           teamCid: {
             type: "string",
             description: "团队ID或文件夹ID，用于指定导入的目标位置"
           }
         },
-        required: ["htmlString", "uId", "teamCid"]
+        required: ["htmlString", "teamCid"]
       }
     };
   }
@@ -43,14 +38,9 @@ export class ImportHtmlTool extends BaseTool {
   async execute(args: Record<string, any>): Promise<ToolResult> {
     try {
       // 验证必需参数
-      const validationError = this.validateRequiredArgs(args, ['htmlString', 'uId', 'teamCid']);
+      const validationError = this.validateRequiredArgs(args, ['htmlString', 'teamCid']);
       if (validationError) {
         return this.createErrorResult(validationError);
-      }
-
-      // 验证参数类型
-      if (typeof args.uId !== 'number') {
-        return this.createErrorResult('uId 必须是数字类型');
       }
 
       if (typeof args.htmlString !== 'string' || args.htmlString.trim() === '') {
@@ -63,11 +53,10 @@ export class ImportHtmlTool extends BaseTool {
 
       const request: ImportHtmlRequest = {
         htmlString: args.htmlString,
-        uId: args.uId,
         teamCid: args.teamCid
       };
 
-      console.log(`正在导入HTML到团队 ${request.teamCid}，用户 ${request.uId}`);
+      console.log(`正在导入HTML到团队 ${request.teamCid}`);
 
       const response = await this.httpUtil.post<ImportHtmlResponse>('/aihtml-go/mcp/import_html', request);
 
@@ -87,7 +76,6 @@ export class ImportHtmlTool extends BaseTool {
 
       let resultText = '✅ HTML导入成功！\n\n';
       resultText += `📁 团队ID: ${request.teamCid}\n`;
-      resultText += `👤 用户ID: ${request.uId}\n`;
       
       // 如果有返回的数据，显示更多信息
       if (result.data) {

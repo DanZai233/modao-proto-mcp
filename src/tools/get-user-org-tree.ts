@@ -3,7 +3,6 @@ import { BaseTool } from './base-tool.js';
 import { ToolResult } from '../types.js';
 
 export interface GetUserOrgTreeRequest {
-  userId: number;
 }
 
 export interface OrgTreeNode {
@@ -30,35 +29,17 @@ export class GetUserOrgTreeTool extends BaseTool {
       description: "获取用户的组织文件树结构，显示用户可以访问的所有文件夹和文件。用于让用户选择导入HTML的目标位置。",
       inputSchema: {
         type: "object",
-        properties: {
-          userId: {
-            type: "number",
-            description: "用户ID"
-          }
-        },
-        required: ["userId"]
+        properties: {},
+        required: []
       }
     };
   }
 
   async execute(args: Record<string, any>): Promise<ToolResult> {
     try {
-      // 验证必需参数
-      const validationError = this.validateRequiredArgs(args, ['userId']);
-      if (validationError) {
-        return this.createErrorResult(validationError);
-      }
+      const request: GetUserOrgTreeRequest = {};
 
-      // 验证参数类型
-      if (typeof args.userId !== 'number') {
-        return this.createErrorResult('userId 必须是数字类型');
-      }
-
-      const request: GetUserOrgTreeRequest = {
-        userId: args.userId
-      };
-
-      console.log(`正在获取用户 ${request.userId} 的组织文件树`);
+      console.log('正在获取用户的组织文件树');
 
       const response = await this.httpUtil.post<GetUserOrgTreeResponse>('/aihtml-go/mcp/get_user_org_tree', request);
 
@@ -84,7 +65,7 @@ export class GetUserOrgTreeTool extends BaseTool {
       }
 
       // 格式化组织树为表格形式
-      let resultText = `📁 用户 ${request.userId} 的组织文件树：\n\n`;
+      let resultText = `📁 用户的组织文件树：\n\n`;
       
       if (Array.isArray(treeData)) {
         resultText += this.formatTreeAsTable(treeData);
