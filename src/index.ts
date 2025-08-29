@@ -6,6 +6,8 @@ import { HttpUtil } from './http-util.js';
 import { BaseTool } from './tools/base-tool.js';
 import { GenHtmlTool } from './tools/gen-html.js';
 import { GenDescriptionTool } from './tools/gen-description.js';
+import { ImportHtmlTool } from './tools/import-html.js';
+import { GetUserOrgTreeTool } from './tools/get-user-org-tree.js';
 
 interface ServerConfig {
   token: string;
@@ -49,7 +51,9 @@ class ModaoProtoMcpServer {
   private initializeTools() {
     const toolInstances = [
       new GenHtmlTool(this.httpUtil),
-      new GenDescriptionTool(this.httpUtil)
+      new GenDescriptionTool(this.httpUtil),
+      new ImportHtmlTool(this.httpUtil),
+      new GetUserOrgTreeTool(this.httpUtil)
     ];
 
     toolInstances.forEach(tool => {
