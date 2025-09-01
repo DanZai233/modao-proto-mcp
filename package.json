@@ -30,7 +30,7 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mb/modao-proto-mcp.git"
+    "url": "git+https://github.com/mb/modao-proto-mcp.git"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "latest",
