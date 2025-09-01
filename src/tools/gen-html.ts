@@ -51,15 +51,22 @@ export class GenHtmlTool extends BaseTool {
       // 调试信息：打印实际响应
       console.log('API响应数据:', JSON.stringify(result, null, 2));
       
-      // 获取HTML内容
+      // 获取HTML内容和key
       const htmlContent = result.html;
+      const key = result.key;
       
       if (!htmlContent) {
         console.log('响应中找不到HTML内容，响应结构:', Object.keys(result));
         return this.createErrorResult(`API响应中缺少html字段。响应结构: ${JSON.stringify(Object.keys(result))}`);
       }
 
-      const resultText = `已成功生成HTML代码:\n\n\`\`\`html\n${htmlContent}\n\`\`\``;
+      let resultText = `${htmlContent}`;
+      
+      // 如果有key，在结果中包含key信息
+      if (key) {
+        resultText += `\n\n<!-- 生成的key: ${key} -->`;
+        console.log('生成的key:', key);
+      }
 
       return this.createSuccessResult(resultText);
 

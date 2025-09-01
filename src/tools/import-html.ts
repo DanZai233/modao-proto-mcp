@@ -5,6 +5,7 @@ import { ToolResult } from '../types.js';
 export interface ImportHtmlRequest {
   htmlString: string;
   teamCid: string;
+  key?: string;
 }
 
 export interface ImportHtmlResponse {
@@ -17,7 +18,7 @@ export class ImportHtmlTool extends BaseTool {
   getToolDefinition(): Tool {
     return {
       name: "import_html",
-      description: "将HTML字符串导入到指定的团队文件夹中。用于将生成的HTML内容保存到用户的工作空间。",
+      description: "将HTML字符串或者key导入到指定的团队文件夹中。用于将生成的HTML内容保存到用户的工作空间。",
       inputSchema: {
         type: "object",
         properties: {
@@ -28,6 +29,10 @@ export class ImportHtmlTool extends BaseTool {
           teamCid: {
             type: "string",
             description: "团队ID或文件夹ID，用于指定导入的目标位置"
+          },
+          key: {
+            type: "string",
+            description: "可选的key参数，可以从gen_html工具的响应中获取"
           }
         },
         required: ["htmlString", "teamCid"]
@@ -56,6 +61,11 @@ export class ImportHtmlTool extends BaseTool {
         teamCid: args.teamCid
       };
 
+      // 如果提供了key参数，添加到请求中
+      if (args.key && typeof args.key === 'string') {
+        request.key = args.key;
+      }
+
       console.log(`正在导入HTML到团队 ${request.teamCid}`);
 
       const response = await this.httpUtil.post<ImportHtmlResponse>('/aihtml-go/mcp/import_html', request);
@@ -68,11 +78,6 @@ export class ImportHtmlTool extends BaseTool {
       
       // 调试信息
       console.log('导入响应数据:', JSON.stringify(result, null, 2));
-
-      // 检查响应是否成功
-      if (result.success === false) {
-        return this.createErrorResult(`导入失败: ${result.message || '未知错误'}`);
-      }
 
       let resultText = '✅ HTML导入成功！\n\n';
       resultText += `📁 团队ID: ${request.teamCid}\n`;

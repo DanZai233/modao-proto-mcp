@@ -23,6 +23,7 @@ export interface ApiResponse<T = any> {
 
 export interface GenHtmlResponse {
   html: string;
+  key?: string;
 }
 
 export interface GenDescriptionResponse {
