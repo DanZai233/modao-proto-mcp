@@ -5,20 +5,46 @@ import { ToolResult } from '../types.js';
 export interface GetUserOrgTreeRequest {
 }
 
-export interface OrgTreeNode {
-  id: string;
+export interface Folder {
+  team_cid: string;
   name: string;
-  type: 'folder' | 'file';
-  parentId?: string;
-  children?: OrgTreeNode[];
-  path?: string;
-  level?: number;
+  owner_id: number;
+  org_cid: string;
+  space_cid: string;
+  parent_cid: string | null;
+  projects_count: number;
+  created_at: string;
+  updated_at: string;
+  children?: Folder[];
+  is_root?: boolean;
+}
+
+export interface Space {
+  cid: string;
+  name: string;
+  org_cid: string;
+  folders: Folder[];
+}
+
+export interface Organization {
+  cid: string;
+  name: string;
+  otype: 'personal' | 'enterprise';
+  user_id: number;
+  created_at: string;
+  spaces: Space[];
+}
+
+export interface UserInfo {
+  id: number;
+  name: string;
+  email: string;
 }
 
 export interface GetUserOrgTreeResponse {
   success: boolean;
-  data?: OrgTreeNode[];
-  tree?: OrgTreeNode[];
+  user: UserInfo;
+  organizations: Organization[];
   message?: string;
 }
 
@@ -57,25 +83,28 @@ export class GetUserOrgTreeTool extends BaseTool {
         return this.createErrorResult(`获取组织树失败: ${result.message || '未知错误'}`);
       }
 
-      // 获取树形数据
-      const treeData = result.data || result.tree || result;
-      
-      if (!treeData || (!Array.isArray(treeData) && typeof treeData !== 'object')) {
-        return this.createErrorResult('API响应中缺少组织树数据');
+      // 验证响应结构
+      if (!result.organizations || !Array.isArray(result.organizations)) {
+        return this.createErrorResult('API响应中缺少组织数据');
       }
 
-      // 格式化组织树为表格形式
-      let resultText = `📁 用户的组织文件树：\n\n`;
+      // 格式化组织文件树
+      let resultText = `👤 用户：${result.user?.name || '未知'} (${result.user?.email || 'N/A'})\n\n`;
+      resultText += `📁 组织文件树结构：\n\n`;
       
-      if (Array.isArray(treeData)) {
-        resultText += this.formatTreeAsTable(treeData);
-      } else {
-        // 如果不是数组，尝试转换
-        resultText += this.formatTreeAsTable([treeData]);
+      // 创建表格头
+      resultText += '| 组织 | 空间 | 文件夹 | Team CID | 项目数 | 类型 |\n';
+      resultText += '|------|------|--------|----------|--------|------|\n';
+      
+      // 遍历所有组织
+      for (const org of result.organizations) {
+        resultText += this.formatOrganization(org);
       }
 
-      resultText += '\n\n💡 提示：您可以使用 import_html 工具将HTML导入到任何文件夹中。';
-      resultText += '\n使用文件夹的 teamCid 或 id 作为 import_html 的 teamCid 参数。';
+      resultText += '\n\n💡 **使用说明：**\n';
+      resultText += '- 使用 `import_html` 工具将HTML导入到指定文件夹\n';
+      resultText += '- 参数 `teamCid` 使用上表中的 "Team CID" 列的值\n';
+      resultText += '- 例如：`{"htmlString": "你的HTML", "teamCid": "telqz5sd7sw7glrs"}`';
 
       return this.createSuccessResult(resultText);
 
@@ -85,45 +114,46 @@ export class GetUserOrgTreeTool extends BaseTool {
     }
   }
 
-  private formatTreeAsTable(nodes: OrgTreeNode[], level: number = 0): string {
+  private formatOrganization(org: Organization): string {
     let result = '';
+    const orgIcon = org.otype === 'personal' ? '👤' : '🏢';
+    let isFirstSpace = true;
     
-    if (level === 0) {
-      result += '| 层级 | 类型 | 名称 | ID | 路径 |\n';
-      result += '|------|------|------|----|----- |\n';
-    }
-
-    const indent = '  '.repeat(level);
-    
-    for (const node of nodes) {
-      const typeIcon = node.type === 'folder' ? '📁' : '📄';
-      const displayName = `${indent}${typeIcon} ${node.name || 'Unnamed'}`;
+    for (const space of org.spaces) {
+      let isFirstFolder = true;
       
-      result += `| ${level} | ${node.type} | ${displayName} | \`${node.id}\` | ${node.path || 'N/A'} |\n`;
-      
-      // 递归处理子节点
-      if (node.children && node.children.length > 0) {
-        result += this.formatTreeAsTable(node.children, level + 1);
+      for (const folder of space.folders) {
+        const orgName = (isFirstSpace && isFirstFolder) ? `${orgIcon} ${org.name}` : '';
+        const spaceName = isFirstFolder ? `📋 ${space.name}` : '';
+        
+        result += this.formatFolder(orgName, spaceName, folder, 0);
+        
+        isFirstFolder = false;
       }
+      
+      isFirstSpace = false;
     }
-
+    
     return result;
   }
 
-  private formatTreeAsSimpleList(nodes: OrgTreeNode[], level: number = 0): string {
+  private formatFolder(orgName: string, spaceName: string, folder: Folder, level: number): string {
     let result = '';
-    const indent = '  '.repeat(level);
+    const indent = '　'.repeat(level); // 使用全角空格以保持对齐
+    const folderIcon = folder.is_root ? '📂' : '📁';
     
-    for (const node of nodes) {
-      const typeIcon = node.type === 'folder' ? '📁' : '📄';
-      result += `${indent}${typeIcon} ${node.name || 'Unnamed'} (ID: ${node.id})\n`;
-      
-      // 递归处理子节点
-      if (node.children && node.children.length > 0) {
-        result += this.formatTreeAsSimpleList(node.children, level + 1);
+    // 文件夹名称
+    const folderName = `${indent}${folderIcon} ${folder.name}`;
+    
+    result += `| ${orgName} | ${spaceName} | ${folderName} | \`${folder.team_cid}\` | ${folder.projects_count} | ${folder.is_root ? '根目录' : '子文件夹'} |\n`;
+    
+    // 递归处理子文件夹
+    if (folder.children && folder.children.length > 0) {
+      for (const child of folder.children) {
+        result += this.formatFolder('', '', child, level + 1);
       }
     }
-
+    
     return result;
   }
 }
