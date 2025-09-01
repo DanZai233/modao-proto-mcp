@@ -6,6 +6,8 @@ import { HttpUtil } from './http-util.js';
 import { BaseTool } from './tools/base-tool.js';
 import { GenHtmlTool } from './tools/gen-html.js';
 import { GenDescriptionTool } from './tools/gen-description.js';
+import { ImportHtmlTool } from './tools/import-html.js';
+import { GetUserOrgTreeTool } from './tools/get-user-org-tree.js';
 
 interface ServerConfig {
   token: string;
@@ -33,7 +35,7 @@ class ModaoProtoMcpServer {
     this.server = new Server(
       {
         name: 'modao-proto-mcp',
-        version: '1.0.0',
+        version: '1.2.0',
       },
       {
         capabilities: {
@@ -49,7 +51,9 @@ class ModaoProtoMcpServer {
   private initializeTools() {
     const toolInstances = [
       new GenHtmlTool(this.httpUtil),
-      new GenDescriptionTool(this.httpUtil)
+      new GenDescriptionTool(this.httpUtil),
+      new ImportHtmlTool(this.httpUtil),
+      new GetUserOrgTreeTool(this.httpUtil)
     ];
 
     toolInstances.forEach(tool => {
@@ -164,7 +168,7 @@ const program = new Command();
 program
   .name('modao-proto-mcp')
   .description('modao-proto-mcp 服务 - 基于Model Context Protocol的原型生成功能服务')
-  .version('1.0.0')
+  .version('1.2.0')
   .requiredOption('--token <token>', 'API服务的访问token')
   .option('--url <url>', 'API服务地址', 'http://localhost:3000')
   .option('--debug', '启用调试模式', false)
