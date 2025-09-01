@@ -6,6 +6,9 @@ modao-proto-mcp is a Model Context Protocol (MCP) server that connects AI client
 
 - **HTML Generation**: Generate HTML code from text descriptions
 - **Design Description**: Create detailed design requirements and specifications
+- **Organization Tree**: Get user's organization and folder structure
+- **HTML Import**: Import generated HTML into specified folders
+- **Streaming Support**: Real-time HTML generation with streaming responses
 - **MCP Standard Compliance**: Full compatibility with Model Context Protocol
 
 ## Quick Start
@@ -110,15 +113,23 @@ Add to your Cline MCP configuration:
 ## Available Tools
 
 ### 1. gen_html
-Generate HTML code from text descriptions.
+Generate HTML code from text descriptions with optional streaming support.
 
 **Parameters:**
 - `user_input` (required): Design requirements description
 - `reference` (optional): Reference information or context
+- `stream` (optional): Enable streaming response, defaults to true
 
 **Example:**
-```
-Create a modern login page with dark theme
+```json
+{
+  "name": "gen_html",
+  "arguments": {
+    "user_input": "Create a modern login page with dark theme",
+    "reference": "Use Material Design principles",
+    "stream": true
+  }
+}
 ```
 
 ### 2. gen_description
@@ -129,8 +140,97 @@ Generate detailed design requirements and specifications.
 - `reference` (optional): Reference information or context
 
 **Example:**
+```json
+{
+  "name": "gen_description",
+  "arguments": {
+    "user_input": "E-commerce product listing page",
+    "reference": "Should include filtering and sorting features"
+  }
+}
 ```
-E-commerce product listing page
+
+### 3. get_user_org_tree
+Get user's organization file tree structure, showing all accessible organizations, spaces, and folders.
+
+**Parameters:**
+- No parameters required
+
+**Returns:**
+- User basic information (name, email)
+- Complete organization hierarchy
+- Team CID for each folder (used for HTML import)
+- Project count statistics
+- Folder types (root/subfolder)
+
+**Example:**
+```json
+{
+  "name": "get_user_org_tree",
+  "arguments": {}
+}
+```
+
+**Response Format:**
+```
+👤 User: Username (email@example.com)
+
+📁 Organization File Tree:
+
+| Organization | Space | Folder | Team CID | Projects | Type |
+|--------------|-------|--------|----------|----------|------|
+| 👤 Personal | 📋 Default | 📂 Root Files | `teo14kjq4root` | 83 | Root |
+| | | 📁 My Folder | `telqz5sd7sw7glrs` | 26 | Subfolder |
+```
+
+### 4. import_html
+Import HTML string content into a specified folder.
+
+**Parameters:**
+- `htmlString` (required): HTML content to import
+- `teamCid` (required): Target folder's Team CID (obtainable from get_user_org_tree)
+
+**Example:**
+```json
+{
+  "name": "import_html",
+  "arguments": {
+    "htmlString": "<!DOCTYPE html><html><head><title>My Page</title></head><body><h1>Hello World</h1></body></html>",
+    "teamCid": "telqz5sd7sw7glrs"
+  }
+}
+```
+
+## Complete Workflow
+
+1. **Generate HTML**: Use `gen_html` to create HTML based on requirements
+2. **Get Folders**: Use `get_user_org_tree` to view available folders
+3. **Import HTML**: Use `import_html` to save generated HTML to chosen folder
+
+**Complete Example:**
+```bash
+# 1. Generate HTML
+{
+  "name": "gen_html",
+  "arguments": {
+    "user_input": "Create a modern login page"
+  }
+}
+
+# 2. View folder structure
+{
+  "name": "get_user_org_tree",
+  "arguments": {}
+}
+
+# 3. Import to specific folder
+{
+  "name": "import_html",
+  "arguments": {
+    "htmlString": "Generated HTML content...",
+    "teamCid": "telqz5sd7sw7glrs"
+  }
+}
 ```
 
 ## Local Development
@@ -159,7 +259,9 @@ modao-proto-mcp/
 │   ├── tools/           # MCP tools implementation
 │   │   ├── base-tool.ts
 │   │   ├── gen-html.ts
-│   │   └── gen-description.ts
+│   │   ├── gen-description.ts
+│   │   ├── get-user-org-tree.ts
+│   │   └── import-html.ts
 │   ├── http-util.ts     # HTTP client utility
 │   ├── types.d.ts       # TypeScript type definitions
 │   └── index.ts         # Main entry point
@@ -174,8 +276,10 @@ modao-proto-mcp/
 
 This MCP service is designed to work with your API server. Make sure your API server supports the following endpoints:
 
-- `POST /aihtml-go/mcp/gen_html`
-- `POST /aihtml-go/mcp/gen_description`
+- `POST /aihtml-go/mcp/gen_html` - Generate HTML code
+- `POST /aihtml-go/mcp/gen_description` - Generate design descriptions
+- `POST /aihtml-go/mcp/get_user_org_tree` - Get user organization tree
+- `POST /aihtml-go/mcp/import_html` - Import HTML to folder
 
 ## Error Handling
 
