@@ -1,6 +1,6 @@
 {
   "name": "@modao-mcp/modao-proto-mcp",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "modao-proto-mcp - A Model Context Protocol server for Modao prototype generation, design tools, organization management, and HTML import functionality",
   "main": "bin/cli.js",
   "bin": {
