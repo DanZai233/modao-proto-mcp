@@ -35,7 +35,7 @@ class ModaoProtoMcpServer {
     this.server = new Server(
       {
         name: 'modao-proto-mcp',
-        version: '1.2.0',
+        version: '1.2.1',
       },
       {
         capabilities: {
