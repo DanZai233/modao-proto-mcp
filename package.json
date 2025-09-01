@@ -10,7 +10,10 @@
     "build": "node build.js",
     "dev": "tsx src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "publish": "npm publish --access public",
+    "version-bump": "node scripts/version_bump.js",
+    "tag-push": "node scripts/tag_push.js"
   },
   "keywords": [
     "mcp",
@@ -54,4 +57,4 @@
     "README.zh-CN.md",
     "LICENSE"
   ]
-} 
+}
