@@ -69,11 +69,6 @@ export class ImportHtmlTool extends BaseTool {
       // 调试信息
       console.log('导入响应数据:', JSON.stringify(result, null, 2));
 
-      // 检查响应是否成功
-      if (result.success === false) {
-        return this.createErrorResult(`导入失败: ${result.message || '未知错误'}`);
-      }
-
       let resultText = '✅ HTML导入成功！\n\n';
       resultText += `📁 团队ID: ${request.teamCid}\n`;
       
