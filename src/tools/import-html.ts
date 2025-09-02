@@ -42,10 +42,6 @@ export class ImportHtmlTool extends BaseTool {
         return this.createErrorResult('必须提供key参数（推荐）或htmlString参数');
       }
 
-      if (!args.key) {
-        return this.createErrorResult('推荐使用gen_html工具返回的key参数进行导入');
-      }
-
       if (args.htmlString && (typeof args.htmlString !== 'string' || args.htmlString.trim() === '')) {
         return this.createErrorResult('如果提供htmlString，不能为空');
       }
