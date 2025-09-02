@@ -59,7 +59,7 @@ export class GenHtmlTool extends BaseTool {
         return this.createErrorResult(`API响应中缺少html字段。响应结构: ${JSON.stringify(Object.keys(result))}`);
       }
 
-      const resultText = `已成功生成HTML代码:\n\n\`\`\`html\n${htmlContent}\n\`\`\``;
+      const resultText = `${htmlContent}`;
 
       return this.createSuccessResult(resultText);
 
