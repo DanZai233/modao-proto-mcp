@@ -17,7 +17,7 @@ export class ImportHtmlTool extends BaseTool {
   getToolDefinition(): Tool {
     return {
       name: "import_html",
-      description: "用于将用户提供的html内容导入到其墨刀个人空间中，只有当用户指定需要导入时，调用此功能，相关描述通常为，导入到墨刀，导入到我的账户，导出为原型格式等。",
+      description: "用于将用户提供的html内容导入到其墨刀个人空间中，只有当用户明确指定需要导入时，再调用此功能，相关描述通常为，导入到墨刀，导入到我的账户，导出为原型格式等。其参数有htmlString和key两个，htmlString的值通常是gen_html工具生成的代码，或模型上下文中的html代码，或用户提供的html代码内容；key的值为gen_html工具输出，如果上下文有调用gen_html，即上下文中存在key值，优先用key值，此时htmlString可留空，如果上下文中没有调用gen_html工具，即没有key值，此时key值可留空，并确保htmlString包含完整html内容。",
       inputSchema: {
         type: "object",
         properties: {
