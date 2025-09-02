@@ -7,7 +7,7 @@ import { BaseTool } from './tools/base-tool.js';
 import { GenHtmlTool } from './tools/gen-html.js';
 import { GenDescriptionTool } from './tools/gen-description.js';
 import { ImportHtmlTool } from './tools/import-html.js';
-import { GetUserOrgTreeTool } from './tools/get-user-org-tree.js';
+
 
 interface ServerConfig {
   token: string;
@@ -35,7 +35,7 @@ class ModaoProtoMcpServer {
     this.server = new Server(
       {
         name: 'modao-proto-mcp',
-        version: '1.2.0',
+        version: '1.3.0',
       },
       {
         capabilities: {
@@ -52,8 +52,7 @@ class ModaoProtoMcpServer {
     const toolInstances = [
       new GenHtmlTool(this.httpUtil),
       new GenDescriptionTool(this.httpUtil),
-      new ImportHtmlTool(this.httpUtil),
-      new GetUserOrgTreeTool(this.httpUtil)
+      new ImportHtmlTool(this.httpUtil)
     ];
 
     toolInstances.forEach(tool => {

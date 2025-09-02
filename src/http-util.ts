@@ -9,7 +9,7 @@ export class HttpUtil {
     this.config = config;
     this.client = axios.create({
       baseURL: config.baseUrl,
-      timeout: config.timeout || 30000,
+      timeout: 180000, // 增加到3分钟
       headers: {
         'Content-Type': 'application/json',
         'Authorization': config.token,

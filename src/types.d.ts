@@ -22,8 +22,8 @@ export interface ApiResponse<T = any> {
 }
 
 export interface GenHtmlResponse {
-  html_content: string;
-  images?: string[];
+  html: string;
+  key?: string;
 }
 
 export interface GenDescriptionResponse {
@@ -36,21 +36,4 @@ export interface ToolResult {
     text: string;
   }>;
   isError?: boolean;
-}
-
-// 新增：流式响应相关类型
-export interface StreamChunk {
-  content: string;
-  isComplete: boolean;
-  error?: string;
-}
-
-export interface StreamToolResult {
-  content: Array<{
-    type: "text";
-    text: string;
-  }>;
-  isError?: boolean;
-  isStreaming?: boolean;
-  streamId?: string;
 } 

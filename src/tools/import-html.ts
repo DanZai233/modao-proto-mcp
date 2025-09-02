@@ -3,8 +3,8 @@ import { BaseTool } from './base-tool.js';
 import { ToolResult } from '../types.js';
 
 export interface ImportHtmlRequest {
-  htmlString: string;
-  teamCid: string;
+  htmlString?: string;
+  key?: string;
 }
 
 export interface ImportHtmlResponse {
@@ -17,46 +17,52 @@ export class ImportHtmlTool extends BaseTool {
   getToolDefinition(): Tool {
     return {
       name: "import_html",
-      description: "将HTML字符串导入到指定的团队文件夹中。用于将生成的HTML内容保存到用户的工作空间。",
+      description: "将key导入到用户的个人空间中。只能使用gen_html工具返回的key作为参数调用此工具。htmlString参数为可选项，主要通过key进行导入操作。",
       inputSchema: {
         type: "object",
         properties: {
           htmlString: {
             type: "string",
-            description: "要导入的HTML字符串内容"
+            description: "可选的HTML字符串内容，通常不需要提供"
           },
-          teamCid: {
+          key: {
             type: "string",
-            description: "团队ID或文件夹ID，用于指定导入的目标位置"
+            description: "从gen_html工具响应中获取的key参数，这是导入操作的主要参数"
           }
         },
-        required: ["htmlString", "teamCid"]
+        required: []
       }
     };
   }
 
   async execute(args: Record<string, any>): Promise<ToolResult> {
     try {
-      // 验证必需参数
-      const validationError = this.validateRequiredArgs(args, ['htmlString', 'teamCid']);
-      if (validationError) {
-        return this.createErrorResult(validationError);
+      // 验证参数：必须提供key或htmlString中的至少一个
+      if (!args.key && !args.htmlString) {
+        return this.createErrorResult('必须提供key参数（推荐）或htmlString参数');
       }
 
-      if (typeof args.htmlString !== 'string' || args.htmlString.trim() === '') {
-        return this.createErrorResult('htmlString 不能为空');
+      if (!args.key) {
+        return this.createErrorResult('推荐使用gen_html工具返回的key参数进行导入');
       }
 
-      if (typeof args.teamCid !== 'string' || args.teamCid.trim() === '') {
-        return this.createErrorResult('teamCid 不能为空');
+      if (args.htmlString && (typeof args.htmlString !== 'string' || args.htmlString.trim() === '')) {
+        return this.createErrorResult('如果提供htmlString，不能为空');
       }
 
-      const request: ImportHtmlRequest = {
-        htmlString: args.htmlString,
-        teamCid: args.teamCid
-      };
+      const request: ImportHtmlRequest = {};
 
-      console.log(`正在导入HTML到团队 ${request.teamCid}`);
+      // 如果提供了htmlString参数，添加到请求中
+      if (args.htmlString && typeof args.htmlString === 'string') {
+        request.htmlString = args.htmlString;
+      }
+
+      // 如果提供了key参数，添加到请求中
+      if (args.key && typeof args.key === 'string') {
+        request.key = args.key;
+      }
+
+      console.log(`正在导入HTML到用户个人空间`);
 
       const response = await this.httpUtil.post<ImportHtmlResponse>('/aihtml-go/mcp/import_html', request);
 
@@ -69,13 +75,8 @@ export class ImportHtmlTool extends BaseTool {
       // 调试信息
       console.log('导入响应数据:', JSON.stringify(result, null, 2));
 
-      // 检查响应是否成功
-      if (result.success === false) {
-        return this.createErrorResult(`导入失败: ${result.message || '未知错误'}`);
-      }
-
       let resultText = '✅ HTML导入成功！\n\n';
-      resultText += `📁 团队ID: ${request.teamCid}\n`;
+      resultText += `📁 导入位置: 个人空间\n`;
       
       // 如果有返回的数据，显示更多信息
       if (result.data) {
