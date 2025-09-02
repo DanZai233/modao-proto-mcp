@@ -6,7 +6,7 @@ export class GenHtmlTool extends BaseTool {
   getToolDefinition(): Tool {
     return {
       name: "gen_html",
-      description: "可以基于用户的设计需求，生成符合描述的html文件，如果有生成的详细设计说明，可沿用此设计说明作为输入条件；通常情况下，如用户无特殊要求，可直接使用此工具生成html，用户可能不会说html，而是可能用原型、页面、设计稿等词汇来表达生成html的需求，此种情况下也需要调用此工具。",
+      description: "可以基于用户的设计需求，生成符合描述的html文件，如果有生成的详细设计说明，可沿用此设计说明作为输入条件；通常情况下，如用户无特殊要求，可直接使用此工具生成html，用户可能不会说html，而是可能用原型、页面、设计稿等词汇来表达生成html的需求，此种情况下也需要调用此工具。调用完成后，需要将内容，截取html代码部分向用户展示，即从<!DOCTYPE html>开头到</html>结尾部分，并在内容前后增加html代码块标记，如```html与```，以便更友好地向用户展示。",
       inputSchema: {
         type: "object",
         properties: {

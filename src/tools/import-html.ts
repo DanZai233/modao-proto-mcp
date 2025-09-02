@@ -4,7 +4,6 @@ import { ToolResult } from '../types.js';
 
 export interface ImportHtmlRequest {
   htmlString: string;
-  teamCid: string;
   key?: string;
 }
 
@@ -18,7 +17,7 @@ export class ImportHtmlTool extends BaseTool {
   getToolDefinition(): Tool {
     return {
       name: "import_html",
-      description: "将HTML字符串或者key导入到指定的团队文件夹中。用于将生成的HTML内容保存到用户的工作空间。",
+      description: "将HTML字符串或者key导入到用户的个人空间中。用于将生成的HTML内容保存到用户的工作空间。优先通过key导入，但html参数也是必需的。",
       inputSchema: {
         type: "object",
         properties: {
@@ -26,16 +25,12 @@ export class ImportHtmlTool extends BaseTool {
             type: "string",
             description: "要导入的HTML字符串内容"
           },
-          teamCid: {
-            type: "string",
-            description: "团队ID或文件夹ID，用于指定导入的目标位置"
-          },
           key: {
             type: "string",
-            description: "可选的key参数，可以从gen_html工具的响应中获取"
+            description: "可选的key参数，可以从gen_html工具的响应中获取，优先使用此参数进行导入"
           }
         },
-        required: ["htmlString", "teamCid"]
+        required: ["htmlString"]
       }
     };
   }
@@ -43,7 +38,7 @@ export class ImportHtmlTool extends BaseTool {
   async execute(args: Record<string, any>): Promise<ToolResult> {
     try {
       // 验证必需参数
-      const validationError = this.validateRequiredArgs(args, ['htmlString', 'teamCid']);
+      const validationError = this.validateRequiredArgs(args, ['htmlString']);
       if (validationError) {
         return this.createErrorResult(validationError);
       }
@@ -52,13 +47,8 @@ export class ImportHtmlTool extends BaseTool {
         return this.createErrorResult('htmlString 不能为空');
       }
 
-      if (typeof args.teamCid !== 'string' || args.teamCid.trim() === '') {
-        return this.createErrorResult('teamCid 不能为空');
-      }
-
       const request: ImportHtmlRequest = {
-        htmlString: args.htmlString,
-        teamCid: args.teamCid
+        htmlString: args.htmlString
       };
 
       // 如果提供了key参数，添加到请求中
@@ -66,7 +56,7 @@ export class ImportHtmlTool extends BaseTool {
         request.key = args.key;
       }
 
-      console.log(`正在导入HTML到团队 ${request.teamCid}`);
+      console.log(`正在导入HTML到用户个人空间`);
 
       const response = await this.httpUtil.post<ImportHtmlResponse>('/aihtml-go/mcp/import_html', request);
 
@@ -80,7 +70,7 @@ export class ImportHtmlTool extends BaseTool {
       console.log('导入响应数据:', JSON.stringify(result, null, 2));
 
       let resultText = '✅ HTML导入成功！\n\n';
-      resultText += `📁 团队ID: ${request.teamCid}\n`;
+      resultText += `📁 导入位置: 个人空间\n`;
       
       // 如果有返回的数据，显示更多信息
       if (result.data) {
