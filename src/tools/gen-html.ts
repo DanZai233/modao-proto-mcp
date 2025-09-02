@@ -65,7 +65,7 @@ export class GenHtmlTool extends BaseTool {
       // 如果有key，在结果中包含key信息
       if (key) {
         resultText += `\n\n<!-- 生成的key: ${key} -->`;
-        console.log('生成的key:', key);
+        console.log('用于导入墨刀用的key:', key);
       }
 
       return this.createSuccessResult(resultText);
