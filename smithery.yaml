@@ -21,7 +21,7 @@ mcp:
         - "-y"
         - "@modao-mcp/modao-proto-mcp"
         - "--token=${MODAO_TOKEN}"
-        - "--url=${MODAO_URL:-http://localhost:3000}"
+        - "--url=${MODAO_URL:-https://modao.cc}"
       env: {}
 
   # 参数配置
@@ -34,7 +34,7 @@ mcp:
       description: "API 服务地址"
       required: false
       type: "string"
-      default: "http://localhost:3000"
+      default: "https://modao.cc"
 
   # 工具描述
   tools:
@@ -73,7 +73,7 @@ examples:
               "-y",
               "modao-proto-mcp",
               "--token=YOUR_TOKEN",
-              "--url=https://your-api-server.com"
+              "--url=https://modao.cc"
             ],
             "env": {}
           }
@@ -90,7 +90,7 @@ examples:
               "-y", 
               "modao-proto-mcp",
               "--token=YOUR_TOKEN",
-              "--url=https://your-api-server.com"
+              "--url=https://modao.cc"
             ],
             "env": {}
           }

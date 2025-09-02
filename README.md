@@ -32,7 +32,7 @@ npm run build
 node dist/index.js --token YOUR_API_TOKEN
 
 # 指定API地址
-node dist/index.js --token YOUR_API_TOKEN --url http://your-api-server.com
+node dist/index.js --token YOUR_API_TOKEN --url https://modao.cc
 
 # 启用调试模式
 node dist/index.js --token YOUR_API_TOKEN --debug
@@ -41,7 +41,7 @@ node dist/index.js --token YOUR_API_TOKEN --debug
 ### 参数说明
 
 - `--token`: API服务的访问token（必需）
-- `--url`: API服务地址（可选，默认：http://localhost:3000）
+- `--url`: API服务地址（可选，默认：https://modao.cc）
 - `--debug`: 启用调试模式（可选）
 
 ## 工具列表

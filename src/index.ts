@@ -167,9 +167,9 @@ const program = new Command();
 program
   .name('modao-proto-mcp')
   .description('modao-proto-mcp 服务 - 基于Model Context Protocol的原型生成功能服务')
-  .version('1.2.0')
+  .version('1.3.6')
   .requiredOption('--token <token>', 'API服务的访问token')
-  .option('--url <url>', 'API服务地址', 'http://localhost:3000')
+  .option('--url <url>', 'API服务地址', 'https://modao.cc')
   .option('--debug', '启用调试模式', false)
   .action(async (options) => {
     try {
