@@ -17,7 +17,7 @@ export class ImportHtmlTool extends BaseTool {
   getToolDefinition(): Tool {
     return {
       name: "import_html",
-      description: "用于将用户提供的html内容导入到其墨刀个人空间中。",
+      description: "用于将用户提供的html内容导入到其墨刀个人空间中，只有当用户指定需要导入时，调用此功能，相关描述通常为，导入到墨刀，导入到我的账户，导出为原型格式等。",
       inputSchema: {
         type: "object",
         properties: {
