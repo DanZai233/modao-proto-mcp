@@ -3,7 +3,7 @@ import { BaseTool } from './base-tool.js';
 import { ToolResult } from '../types.js';
 
 export interface ImportHtmlRequest {
-  htmlString: string;
+  htmlString?: string;
   key?: string;
 }
 
@@ -17,39 +17,45 @@ export class ImportHtmlTool extends BaseTool {
   getToolDefinition(): Tool {
     return {
       name: "import_html",
-      description: "将HTML字符串或者key导入到用户的个人空间中。用于将生成的HTML内容保存到用户的工作空间。优先通过key导入，但html参数也是必需的。",
+      description: "将key导入到用户的个人空间中。只能使用gen_html工具返回的key作为参数调用此工具。htmlString参数为可选项，主要通过key进行导入操作。",
       inputSchema: {
         type: "object",
         properties: {
           htmlString: {
             type: "string",
-            description: "要导入的HTML字符串内容"
+            description: "可选的HTML字符串内容，通常不需要提供"
           },
           key: {
             type: "string",
-            description: "可选的key参数，可以从gen_html工具的响应中获取，优先使用此参数进行导入"
+            description: "从gen_html工具响应中获取的key参数，这是导入操作的主要参数"
           }
         },
-        required: ["htmlString"]
+        required: []
       }
     };
   }
 
   async execute(args: Record<string, any>): Promise<ToolResult> {
     try {
-      // 验证必需参数
-      const validationError = this.validateRequiredArgs(args, ['htmlString']);
-      if (validationError) {
-        return this.createErrorResult(validationError);
+      // 验证参数：必须提供key或htmlString中的至少一个
+      if (!args.key && !args.htmlString) {
+        return this.createErrorResult('必须提供key参数（推荐）或htmlString参数');
       }
 
-      if (typeof args.htmlString !== 'string' || args.htmlString.trim() === '') {
-        return this.createErrorResult('htmlString 不能为空');
+      if (!args.key) {
+        return this.createErrorResult('推荐使用gen_html工具返回的key参数进行导入');
       }
 
-      const request: ImportHtmlRequest = {
-        htmlString: args.htmlString
-      };
+      if (args.htmlString && (typeof args.htmlString !== 'string' || args.htmlString.trim() === '')) {
+        return this.createErrorResult('如果提供htmlString，不能为空');
+      }
+
+      const request: ImportHtmlRequest = {};
+
+      // 如果提供了htmlString参数，添加到请求中
+      if (args.htmlString && typeof args.htmlString === 'string') {
+        request.htmlString = args.htmlString;
+      }
 
       // 如果提供了key参数，添加到请求中
       if (args.key && typeof args.key === 'string') {
