@@ -5,7 +5,7 @@
       "args": [
         "/path/to/your/modao-proto-mcp/dist/index.js",
         "--token=YOUR_API_TOKEN",
-        "--url=https://your-api-server.com",
+        "--url=https://modao.cc",
         "--debug"
       ],
       "env": {}

@@ -8,7 +8,7 @@ modao-proto-mcp 是基于 Model Context Protocol (MCP) 的原型生成功能服�
 
 - **版本**: v1.3.0
 - **协议**: Model Context Protocol
-- **基础URL**: 可配置（默认: http://localhost:3000）
+- **基础URL**: 可配置（默认: https://modao.cc）
 - **认证**: Bearer Token
 
 ## MCP 工具列表
@@ -398,13 +398,13 @@ MCP客户端 → MCP服务器 → HTTP工具类 → 后端API服务
 ### 启动参数
 
 ```bash
-node dist/index.js --token YOUR_API_TOKEN --url http://your-api-server.com --debug
+node dist/index.js --token YOUR_API_TOKEN --url https://modao.cc --debug
 ```
 
 | 参数 | 必需 | 默认值 | 描述 |
 |------|------|--------|------|
 | `--token` | ✅ | - | API服务的访问token |
-| `--url` | ❌ | http://localhost:3000 | API服务地址 |
+| `--url` | ❌ | https://modao.cc | API服务地址 |
 | `--debug` | ❌ | false | 启用调试模式 |
 
 ### 环境要求

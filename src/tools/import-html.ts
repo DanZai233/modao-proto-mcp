@@ -17,17 +17,17 @@ export class ImportHtmlTool extends BaseTool {
   getToolDefinition(): Tool {
     return {
       name: "import_html",
-      description: "将key导入到用户的个人空间中。只能使用gen_html工具返回的key作为参数调用此工具。htmlString参数为可选项，主要通过key进行导入操作。",
+      description: "用于将用户提供的html内容导入到其墨刀个人空间中，只有当用户明确指定需要导入时，再调用此功能，相关描述通常为，导入到墨刀，导入到我的账户，导出为原型格式等。其参数有htmlString和key两个，htmlString的值通常是gen_html工具生成的代码，或模型上下文中的html代码，或用户提供的html代码内容；key的值为gen_html工具输出，如果上下文有调用gen_html，即上下文中存在key值，优先用key值，此时htmlString可留空，如果上下文中没有调用gen_html工具，即没有key值，此时key值可留空，并确保htmlString包含完整html内容。",
       inputSchema: {
         type: "object",
         properties: {
           htmlString: {
             type: "string",
-            description: "可选的HTML字符串内容，通常不需要提供"
+            description: "此处通常是gen_html工具生成的代码，或模型上下文中的html代码，或用户指定的html代码内容，如果没有key值，此处必填。"
           },
           key: {
             type: "string",
-            description: "从gen_html工具响应中获取的key参数，这是导入操作的主要参数"
+            description: "key为gen_html工具输出，如果上下文中没有gen_html工具，可留空，并确保htmlString有内容。"
           }
         },
         required: []
@@ -40,10 +40,6 @@ export class ImportHtmlTool extends BaseTool {
       // 验证参数：必须提供key或htmlString中的至少一个
       if (!args.key && !args.htmlString) {
         return this.createErrorResult('必须提供key参数（推荐）或htmlString参数');
-      }
-
-      if (!args.key) {
-        return this.createErrorResult('推荐使用gen_html工具返回的key参数进行导入');
       }
 
       if (args.htmlString && (typeof args.htmlString !== 'string' || args.htmlString.trim() === '')) {
