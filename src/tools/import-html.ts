@@ -17,17 +17,17 @@ export class ImportHtmlTool extends BaseTool {
   getToolDefinition(): Tool {
     return {
       name: "import_html",
-      description: "将key导入到用户的个人空间中。只能使用gen_html工具返回的key作为参数调用此工具。htmlString参数为可选项，主要通过key进行导入操作。",
+      description: "用于将用户提供的html内容导入到其墨刀个人空间中。",
       inputSchema: {
         type: "object",
         properties: {
           htmlString: {
             type: "string",
-            description: "可选的HTML字符串内容，通常不需要提供"
+            description: "此处通常是gen_html工具生成的代码，或模型上下文中的html代码，或用户指定的html代码内容，如果没有key值，此处必填。"
           },
           key: {
             type: "string",
-            description: "从gen_html工具响应中获取的key参数，这是导入操作的主要参数"
+            description: "key为gen_html工具输出，如果上下文中没有gen_html工具，可留空，并确保htmlString有内容。"
           }
         },
         required: []
