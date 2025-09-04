@@ -44,6 +44,118 @@ node dist/index.js --token YOUR_API_TOKEN --debug
 - `--url`: API服务地址（可选，默认：https://modao.cc）
 - `--debug`: 启用调试模式（可选）
 
+## MCP客户端配置
+
+### 通用配置
+
+适用于所有支持MCP的客户端：
+
+```json
+{
+  "mcpServers": {
+    "modao-proto-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modao-mcp/modao-proto-mcp",
+        "--token=YOUR_TOKEN",
+        "--url=https://modao.cc"
+      ]
+    }
+  }
+}
+```
+
+### Claude Desktop
+
+**Windows:** `%APPDATA%\Claude\claude_desktop_config.json`  
+**macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`  
+**Linux:** `~/.config/claude/claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "modao-proto-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modao-mcp/modao-proto-mcp",
+        "--token=YOUR_TOKEN",
+        "--url=https://modao.cc"
+      ]
+    }
+  }
+}
+```
+
+### Cursor
+
+在 `settings.json` 中添加：
+
+```json
+{
+  "mcp.servers": {
+    "modao-proto-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modao-mcp/modao-proto-mcp",
+        "--token=YOUR_TOKEN",
+        "--url=https://modao.cc"
+      ]
+    }
+  }
+}
+```
+
+### Windsurf
+
+在 `~/.windsurf/config.json` 中添加：
+
+```json
+{
+  "mcp": {
+    "servers": {
+      "modao-proto-mcp": {
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modao-mcp/modao-proto-mcp",
+          "--token=YOUR_TOKEN",
+          "--url=https://modao.cc"
+        ]
+      }
+    }
+  }
+}
+```
+
+### Claude Code
+
+在 `~/.claude-code/config.json` 中添加：
+
+```json
+{
+  "mcpServers": {
+    "modao-proto-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modao-mcp/modao-proto-mcp",
+        "--token=YOUR_TOKEN",
+        "--url=https://modao.cc"
+      ]
+    }
+  }
+}
+```
+
+### 常见问题
+
+**获取 Token：** 如果 token 报错，请登录 [modao.cc](https://modao.cc) 或 [modao.cc/ai](https://modao.cc/ai)，点击右上角头像 → 令牌设置 → 创建令牌
+
+**积分不足：** 如果 gen_html 无法生成（积分不够），请到 [modao.cc/ai](https://modao.cc/ai) 进行积分充值
+
 ## 工具列表
 
 ### 1. gen_html
@@ -285,7 +397,7 @@ MIT License
 
 ## 更新日志
 
-### v1.3.0 (当前版本)
+### v1.3.7 (当前版本)
 - 🔄 优化HTML导入流程，使用key进行导入操作
 - 📝 改进工具描述和参数说明
 - 🛠️ 简化工作流程，移除组织文件树功能
