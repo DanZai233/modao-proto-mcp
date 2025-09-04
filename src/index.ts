@@ -35,7 +35,7 @@ class ModaoProtoMcpServer {
     this.server = new Server(
       {
         name: 'modao-proto-mcp',
-        version: '1.3.7',
+        version: '1.3.8',
       },
       {
         capabilities: {
@@ -91,46 +91,15 @@ class ModaoProtoMcpServer {
       }
 
       try {
-        // 检查是否请求流式响应
-        const shouldStream = args?.stream === true && tool.supportsStreaming();
+        const result = await tool.execute(args || {});
         
-        if (shouldStream) {
-          // 流式执行
-          if (this.config.debug) {
-            console.error(`工具 ${name} 使用流式执行`);
-          }
-          
-          let streamContent = '';
-          const result = await tool.executeStream(args || {}, (chunk: string) => {
-            streamContent += chunk;
-            // 这里可以发送流式更新，但MCP协议本身不支持流式响应
-            // 所以我们收集所有内容后一次性返回
-          });
-          
-          if (this.config.debug) {
-            console.error(`工具 ${name} 流式执行${result.isError ? '失败' : '完成'}`);
-          }
-          
-          return {
-            content: [
-              {
-                type: "text",
-                text: `流式生成完成:\n\n${streamContent}`
-              }
-            ]
-          };
-        } else {
-          // 普通执行
-          const result = await tool.execute(args || {});
-          
-          if (this.config.debug) {
-            console.error(`工具 ${name} 执行${result.isError ? '失败' : '成功'}`);
-          }
-          
-          return {
-            content: result.content
-          };
+        if (this.config.debug) {
+          console.error(`工具 ${name} 执行${result.isError ? '失败' : '成功'}`);
         }
+        
+        return {
+          content: result.content
+        };
       } catch (error: any) {
         if (this.config.debug) {
           console.error(`工具 ${name} 执行出错:`, error);
