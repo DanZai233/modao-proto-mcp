@@ -1,0 +1,126 @@
+{
+  "name": "modao-proto-mcp",
+  "displayName": "墨刀 AI 原型生成 MCP",
+  "description": "AI 驱动的 HTML 原型生成服务，支持自然语言描述转换为完整的 HTML 代码，包含设计描述生成和墨刀工作空间导入功能",
+  "version": "1.3.7",
+  "author": "墨刀团队",
+  "license": "ISC",
+  "homepage": "https://modao.cc",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/modao-dev/modao-proto-mcp"
+  },
+  "keywords": [
+    "mcp",
+    "ai",
+    "html",
+    "design",
+    "prototype",
+    "generation",
+    "modao",
+    "前端原型",
+    "设计工具"
+  ],
+  "category": "design",
+  "tags": [
+    "AI生成",
+    "HTML原型",
+    "设计工具",
+    "前端开发",
+    "原型设计"
+  ],
+  "runtime": {
+    "type": "node",
+    "version": ">=18.0.0"
+  },
+  "port": 3000,
+  "healthCheck": "/health",
+  "environment": [
+    {
+      "name": "MODAO_TOKEN",
+      "description": "墨刀 API 访问令牌",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "name": "MODAO_URL",
+      "description": "墨刀 API 服务地址",
+      "required": false,
+      "type": "string",
+      "default": "https://modao.cc"
+    }
+  ],
+  "tools": [
+    {
+      "name": "gen_html",
+      "description": "基于用户描述生成完整的HTML代码，支持现代化设计和响应式布局",
+      "parameters": {
+        "user_input": {
+          "type": "string",
+          "required": true,
+          "description": "用户的设计需求描述"
+        },
+        "reference": {
+          "type": "string",
+          "required": false,
+          "description": "可选的参考信息或上下文"
+        }
+      }
+    },
+    {
+      "name": "gen_description",
+      "description": "将用户简短的设计想法扩展为详细的设计规范文档",
+      "parameters": {
+        "user_input": {
+          "type": "string",
+          "required": true,
+          "description": "用户的设计想法或需求描述"
+        },
+        "reference": {
+          "type": "string",
+          "required": false,
+          "description": "可选的参考信息或上下文"
+        }
+      }
+    },
+    {
+      "name": "import_html",
+      "description": "将生成的HTML导入到墨刀个人工作空间",
+      "parameters": {
+        "key": {
+          "type": "string",
+          "required": true,
+          "description": "从gen_html工具获取的导入key"
+        },
+        "htmlString": {
+          "type": "string",
+          "required": false,
+          "description": "可选的HTML字符串内容"
+        }
+      }
+    }
+  ],
+  "usage": {
+    "examples": [
+      {
+        "title": "生成登录页面",
+        "description": "创建一个现代风格的登录页面",
+        "code": "使用gen_html工具，输入'创建一个现代风格的登录页面，包含用户名和密码输入框'"
+      },
+      {
+        "title": "设计描述扩展",
+        "description": "将简单的设计想法扩展为详细规范",
+        "code": "使用gen_description工具，输入'电商产品列表页面'"
+      },
+      {
+        "title": "导入到工作空间",
+        "description": "将生成的HTML导入到墨刀个人空间",
+        "code": "使用import_html工具，传入gen_html返回的key值"
+      }
+    ]
+  },
+  "support": {
+    "documentation": "https://github.com/modao-dev/modao-proto-mcp/blob/main/README.md",
+    "issues": "https://github.com/modao-dev/modao-proto-mcp/issues"
+  }
+}
